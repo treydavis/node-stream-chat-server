@@ -49,6 +49,16 @@ function ChatServer(user, users, rooms) {
 	sendLineToRoom(roomName, user.name + ': ' + message);
     });
 
+    this.on('pm', function(message) {
+	if (!message) return;
+	var privateMessagePattern = new RegExp(/^(\w+)\s(.*)?$/);
+	var matches = message.match(privateMessagePattern);
+	if (!matches) return;
+	var userName = matches[1], message = matches[2];
+	if (!users[userName]) return;
+	users[userName].sendLine(user.name + ': ' + message);
+    });
+
     this.on('rooms', function() {
 	user.sendLine('Active rooms are:');
 	for (var roomName in rooms) {
