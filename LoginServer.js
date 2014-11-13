@@ -40,6 +40,7 @@ LoginServer.prototype._write = function(line, encoding, done) {
     this.users[userName] = this.user;
     this.user.sendLine('Welcome ' + userName + '!');
     this.emit('login');
+    console.log(userName + ' signed in');
     done();
 };
 

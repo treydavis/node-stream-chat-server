@@ -92,6 +92,7 @@ function ChatServer(user, users, rooms) {
 	userLeaveRoom();
 	delete users[user.name];
 	user.sendEnd('BYE');
+	console.log(user.name + ' signed out');
     });
 
 }
