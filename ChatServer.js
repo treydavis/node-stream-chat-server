@@ -91,7 +91,7 @@ function ChatServer(user, users, rooms) {
     this.on('quit', function() {
 	userLeaveRoom();
 	delete users[user.name];
-	user.sendLine('BYE');
+	user.sendEnd('BYE');
     });
 
 }

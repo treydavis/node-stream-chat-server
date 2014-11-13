@@ -13,4 +13,12 @@ User.prototype.sendLine = function(line) {
     }
 };
 
+User.prototype.sendEnd = function(line) {
+    try {
+	this.socket.end(line + '\r\n');
+    } catch (e) {
+	console.log('write to socket failed');
+    }
+};
+
 module.exports = User;
