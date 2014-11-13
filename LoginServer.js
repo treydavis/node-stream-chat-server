@@ -1,5 +1,6 @@
 var util = require('util');
 var Writable = require('stream').Writable;
+var StringDecoder = require('string_decoder').StringDecoder;
 util.inherits(LoginServer, Writable);
 
 function LoginServer(user, users) {
@@ -10,6 +11,7 @@ function LoginServer(user, users) {
 
     this.user = user;
     this.users = users;
+    this._decoder = new StringDecoder('utf8');
     user.sendLine('Welcome to Trey\'s chat server');
     user.sendLine('Login Name?');
 }
@@ -23,16 +25,20 @@ LoginServer.prototype.isValidUserName = function(userName) {
 }
 
 LoginServer.prototype._write = function(line, encoding, done) {
-    if(!this.isUserNameAvailable(line)) {
+    var userName = this._decoder.write(line);
+    if(!this.isUserNameAvailable(userName)) {
 	this.user.sendLine('Sorry, name taken.');
+	done();
 	return;
     }
-    if(!this.isValidUserName(line)) {
+    if(!this.isValidUserName(userName)) {
 	this.user.sendLine('User name not accepted.');
+	done();
 	return;
     }
-    this.user.name = line;
-    this.users[line] = this.user;
+    this.user.name = userName;
+    this.users[userName] = this.user;
+    this.user.sendLine('Welcome ' + userName + '!');
     this.emit('login');
     done();
 };

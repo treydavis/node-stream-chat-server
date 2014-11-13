@@ -18,41 +18,17 @@ var server = net.createServer(function(socket) {
     socket.pipe(lineParseStream).pipe(loginServer);
 
     loginServer.on('login', function() {
-	console.log('logged in');
 	lineParseStream.unpipe(loginServer);
 	var commandParseStream = new CommandParseStream();
 	var chatServer = new ChatServer(user, users, rooms);
 	lineParseStream.pipe(commandParseStream).pipe(chatServer);
+	socket.on('close', function() {
+	    chatServer.emit('quit');
+	});
     });
-/*
 
-
-    var messageEmitter = new MessageEmitter();
-    var loginServer = new LoginServer(user, sharedCache);
-
-    messageEmitter.setSocket(socket
-    socket.pipe(messageEmitter.pipe(loginServer));
-
-    loginServer.didLogIn = function(user) {
-	var commandEmitter = new CommandEmitter();
-	var chatServer = new ChatServer(user, sharedCache);
-	messageEmitter.pipe(commandEmitter.pipe(chatServer));
-    };*/
 });
 
 server.listen(9399, function() {
     console.log('server bound');
 });
-
-
-/*
-    //the server should subscribe to events directly
-    var attachServer = function(server) {
-	this.removeAllListeners('data');
-	this.on('data', messageParser(server));
-	this.removeAllListeners('end');
-	socket.on('end', function() {
-	    if (server.end) server.end();
-	    console.log('server disconnected');
-	});
-    };*/

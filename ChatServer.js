@@ -4,13 +4,13 @@ util.inherits(ChatServer, Writable);
 
 function ChatServer(user, users, rooms) {
     if (!(this instanceof ChatServer))
-	return new ChatServer(user, sharedCache);
+	return new ChatServer(user, users, rooms);
 
     Writable.call(this);
     this._writableState.objectMode = true;
 
     var isValidRoomName = function(roomName) {
-	return roomName.match(new RegExp(/^\w+$/)) != null;
+	return roomName && roomName.match(new RegExp(/^\w+$/)) != null;
     };
 
     var sendLineToRoom = function(roomName, line) {
@@ -66,7 +66,7 @@ function ChatServer(user, users, rooms) {
 
 	userLeaveRoom();
 
-	sendLineToRoom(roomName, ' * new user joined chat: ' + user.name);
+	sendLineToRoom(roomName, '* new user joined chat: ' + user.name);
 
 	if (!rooms[roomName]) {
 	    //create room
@@ -90,14 +90,13 @@ function ChatServer(user, users, rooms) {
 
     this.on('quit', function() {
 	userLeaveRoom();
-	//this.users.removeUser(user);
-	socket.end('BYE\n');
+	delete users[user.name];
+	user.sendLine('BYE');
     });
 
 }
 
 ChatServer.prototype._write = function(command, encoding, done) {
-    console.log('chatserver: ', command);
     this.emit(command.command, command.payload);
     done();
 };

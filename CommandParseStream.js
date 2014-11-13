@@ -25,7 +25,6 @@ CommandParseStream.prototype._transform = function(line, encoding, done) {
 	command = commandPatternMatches[1];
 	payload = commandPatternMatches[2];
     }
-    console.log({command: command, payload: payload});
     this.push({command: command, payload: payload});
     done();
 };
