@@ -1,11 +1,14 @@
 {
   "name": "chat-server",
   "version": "0.0.0",
-  "description": "",
+  "description": "A toy chat server",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test/"
   },
   "author": "Trey Davis",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^2.2.4"
+  }
 }
